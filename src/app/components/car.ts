@@ -1,10 +1,20 @@
+import { engineApi, garageApi } from "../api/index";
+
 class Car {
+  async addListener() {
+    document.querySelector('.aaa')?.addEventListener('click', async(e) => {
+      const selectCar = await engineApi.driveCar(1);
+      console.log(selectCar)
+    });
+
+    
+  }
 
   render() {
     return `
     <div class="garage__car">
           <div class="car__info">
-            <button>select</button>
+            <button class="aaa">select</button>
             <button>remove</button>
             <h3>Tesla</h3>
           </div>
