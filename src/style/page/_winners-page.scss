@@ -1,0 +1,137 @@
+@import "../base/variabless";
+
+.winners {
+  width: 90%;
+  margin: 25px auto;
+
+    &__title {
+      color: $color14; 
+      font-family: $fonts; 
+      font-size: 28px; 
+      font-weight: 300; 
+      line-height: 32px; 
+      margin: 0 0 14px 20px;
+    }
+
+		&__garage {
+      width: 100%;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+      padding: 15px 0;
+		}
+
+		&__table {
+      width: 100%;
+      height: 660px;
+		}
+}
+.table-row-title {
+  width: 100%;
+  height: 60px;
+  background-color: $color9;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+.table-row__item {
+  color: $color8; 
+  font-family: $fonts; 
+  font-size: 20px; 
+  font-weight: 400; 
+  line-height: 24px; 
+  padding: 0 5px;
+  text-transform: uppercase;
+  margin: 0;
+  text-align: center;
+}
+.table-row__item-icon {
+  fill: $color8;
+}
+.table-row__item-num {
+  width: 10%;
+}
+.table-row__item-car {
+  width: 20%;
+}
+.table-row__item-name {
+  width: 30%;
+}
+.table-row__item-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+}
+.table-row__item-wins {
+  width: 10%;  
+}
+.garage__pagination {
+		width: 50%;
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    button {
+      align-items: center;
+      appearance: none;
+      background-image: radial-gradient(100% 100% at 100% 0, $color2 0, $color3 100%);
+      border: 0;
+      border-radius: 6px;
+      box-shadow: rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset;
+      box-sizing: border-box;
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      font-family: $fonts;
+      text-transform: uppercase;
+      height: 48px;
+      justify-content: center;
+      line-height: 1;
+      list-style: none;
+      overflow: hidden;
+      padding-left: 16px;
+      padding-right: 16px;
+      position: relative;
+      text-align: left;
+      text-decoration: none;
+      transition: box-shadow .15s, transform .15s;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      white-space: nowrap;
+      will-change: box-shadow, transform;
+      font-size: 18px;
+    }
+
+    button:focus {
+      box-shadow: $color4 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, $color4 0 -3px 0 inset;
+    }
+
+    button:hover {
+      box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, $color4 0 -3px 0 inset;
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      box-shadow: $color4 0 3px 7px inset;
+      transform: translateY(2px);
+    }
+}
+
+.winners-num {
+  color: $color10;
+  font-size: 50px;
+  text-shadow: 0 0 2px #fff, 
+             -1px -1px 0 hsl(80, 70%, 35%),
+             -2px -2px 1px hsl(80, 70%, 35%),
+             -2px -2px 2px hsl(80, 10%, 15%);
+}
+.pagination-num {
+  color: $color11;
+  font-size: 30px;
+  text-shadow: 0 0 2px #fff, 
+  -0.5px -0.5px 0 hsl(80, 70%, 35%),
+  -1px -1px 0.5px hsl(80, 70%, 35%),
+  -1px -1px 1px hsl(80, 10%, 15%);
+}

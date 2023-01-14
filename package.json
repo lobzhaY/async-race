@@ -2,7 +2,7 @@
   "name": "async-race",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "webpack.base.config.js",
   "scripts": {
     "dev": "webpack serve --open --config ./webpack.config.js --env mode=dev",
     "build": "webpack --config ./webpack.config.js --env mode=prod",
@@ -12,9 +12,9 @@
     "type": "git",
     "url": "git+https://github.com/lobzhaY/async-race.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
+  "homepage": "",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",

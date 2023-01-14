@@ -1,1 +1,40 @@
 @import './base/normalize';
+@import './base/variabless';
+@import './layout/header';
+@import './layout/footer';
+@import './page/winners-page';
+@import './page/garage-page';
+@import './components/winner';
+@import './components/management';
+@import './components/car';
+
+
+* {
+  box-sizing: border-box;
+}
+html {
+  font-size: 10px;
+  background-color: $color13;
+}
+
+.wrapper {
+  max-width: 1260px;
+  margin: $margit-center;
+  box-shadow: 6px 6px #989898, 12px 12px #6c6666,  0 0 0 1px silver;
+}
+
+.container {
+  max-width: $container-width;
+  margin: 0 auto 10px;
+  height: 100%;
+}
+.title {
+  font-family: $fonts; 
+  font-size: 48px; 
+  color: $color12;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 400;
+  line-height: 55px; 
+  margin: 0 0 16px;
+}

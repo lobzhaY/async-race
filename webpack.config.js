@@ -31,8 +31,8 @@ const baseConfig = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        filename: 'bundle.js',
         path: path.resolve(__dirname, './dist'),
+        filename: 'bundle.js',
         assetModuleFilename: 'assets/[hash][ext][query]',
         clean: true,
     },

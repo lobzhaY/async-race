@@ -1,0 +1,181 @@
+@import '../base/variabless';
+
+.garage__car {
+  width: 100%;
+  height: 100px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 2px dotted $color4;
+  }
+.car {
+
+  &__road {
+    width: 100%;
+    height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  }
+
+  &__info {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 2px;
+
+button {
+  align-items: center;
+  appearance: none;
+  background-clip: padding-box;
+  background-color: initial;
+  background-image: none;
+  border-style: none;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  flex-direction: row;
+  flex-shrink: 0;
+  font-family: $fonts;
+  font-size: 16px;
+  font-weight: 400;
+  justify-content: center;
+  line-height: 24px;
+  margin: 0;
+  max-height: 64px;
+  outline: none;
+  overflow: visible;
+  padding: 5px 10px;
+  pointer-events: auto;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  width: auto;
+  word-break: keep-all;
+  z-index: 0;
+  margin-right: 5px;
+}
+
+button:before,
+button:after {
+  border-radius: 80px;
+}
+
+button:before {
+  background-color: $color11;
+  content: "";
+  display: block;
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -2;
+}
+
+button:after {
+  background-color: initial;
+  background-image: linear-gradient(92.83deg, $color1 0, $color10 100%);
+  bottom: 2px;
+  content: "";
+  display: block;
+  left: 2px;
+  overflow: hidden;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  transition: all 100ms ease-out;
+  z-index: -1;
+}
+
+button:hover:not(:disabled):after {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  transition-timing-function: ease-in;
+}
+
+button:active:not(:disabled) {
+  color: #ccc;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: .24;
+}
+
+h3 {
+  font-weight: 400; 
+  font-size: 25px;
+  margin: 0px 0px 0px 0px; 
+  line-height: 120%; 
+  font-family: $fonts;
+}
+  }
+}
+.road {
+
+  &__buttons {
+
+button {
+  background-color: #fbeee0;
+  border: 2px solid #422800;
+  border-radius: 30px;
+  box-shadow: #422800 4px 4px 0 0;
+  color: #422800;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 400;
+  font-size: 18px;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  font-family: $fonts;
+}
+
+button:hover {
+  background-color: #fff;
+}
+
+button:active {
+  box-shadow: #422800 2px 2px 0 0;
+  transform: translate(2px, 2px);
+}
+  }
+
+  &__car {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .car {
+     width: 100%;
+     height: 100%;
+      
+      fill: yellow;
+    transform: scale(-1, 1);
+    }
+  }
+
+  &__finish {
+    width: 15%;
+    
+    .flag {
+      fill-rule: "nonzero";
+      fill: red;
+    }
+  }
+}
