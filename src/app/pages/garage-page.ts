@@ -1,27 +1,81 @@
+import { garageApi } from "../api/index";
 import { Header, Management, Car, Footer } from "../components/index";
+import { ICar } from "../interface/interface";
+import store from "../store/store";
+import { Winners } from "./index";
+
 class Garage {
-  
+ async updateStateGarage() {
+    const { items, count } = await garageApi.getCars(store.carsPage);
+    store.cars = items;
+    store.carsCount = count;
+
+    const maxCarsPage: number = store.carsPage * 7;
+
+     if (maxCarsPage < parseInt(store.carsCount!)) {
+      (document.getElementById('next') as HTMLButtonElement).disabled = false;
+     } else {
+      (document.getElementById('next') as HTMLButtonElement).disabled = true;
+     }
+    
+     if (store.carsPage > 1) {
+      (document.getElementById('prev') as HTMLButtonElement).disabled = false;
+     } else {
+      (document.getElementById('prev') as HTMLButtonElement).disabled = true;
+     }
+  }
+
+  prevPageClick() {
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as Element;
+      if (target.classList.contains('prev-button')) {
+        if (store.view == 'garage') {
+          store.carsPage--;
+          await this.updateStateGarage();
+          const garagePage = document.querySelector<HTMLElement>('.garage');
+          garagePage!.innerHTML = this.render();
+        } else {
+          store.winnersPage -= 1;
+         // await updateStateWinners();
+         const winnersPage = document.querySelector<HTMLElement>('.winners');
+         winnersPage!.innerHTML = Winners.render();
+        }
+      }
+    })
+  }
+
+  nextPageClick() {
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as Element;
+      if (target.classList.contains('next-button')) {
+        if (store.view === 'garage') {
+          store.carsPage++;
+          await this.updateStateGarage();
+          const garagePage = document.querySelector<HTMLElement>('.garage');
+          garagePage!.innerHTML = this.render();
+        } else if (store.view === 'winners') {
+          store.winnersPage++;
+         // await updateStateWinners();
+         const winnersPage = document.querySelector<HTMLElement>('.winners');
+         winnersPage!.innerHTML = Winners.render();
+        }
+      }
+    })
+  }
+
   render() {
     return  `
-    ${Header.render()}
-    ${Management.render()}
     <main class="garage">
     <div class="container">
-      <h1 class="title">Garage ( <span class="winners-num"">4</span> )</h1>
+      <h1 class="title">Garage ( <span class="winners-num"">${store.carsCount}</span> )</h1>
       <div class="garage__garage">
-      <h2 class="winners__title">Garage #<span class="pagination-num">4</span></h2>
+      <h2 class="winners__title">Garage #<span class="pagination-num">${store.carsPage}</span></h2>
       <div class="garage__container" id="garage">
-        ${Car.render()}
-
+      ${store.cars.map((car: ICar) => Car.render(car)).join('')}
       </div>
-        <div class="garage__pagination">
-          <button>prev</button>
-          <button>next</button>
-        </div>
       </div>
     </div>
   </main>
-  ${Footer.render()}
     `  
   }
 };

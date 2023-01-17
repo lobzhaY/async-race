@@ -36,6 +36,9 @@ const baseConfig = {
         assetModuleFilename: 'assets/[hash][ext][query]',
         clean: true,
     },
+    experiments: {
+        topLevelAwait: true
+      }, 
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/public/index.html'),

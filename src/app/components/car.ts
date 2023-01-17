@@ -1,22 +1,52 @@
-import { engineApi, garageApi } from "../api/index";
+import { engineApi, garageApi, winnersApi } from "../api/index";
+import { CarBody, ICar } from "../interface/interface";
+import { Garage } from "../pages/index";
+import { Management } from "./index";
 
 class Car {
-  async addListener() {
-    document.querySelector('.aaa')?.addEventListener('click', async(e) => {
-      const selectCar = await engineApi.driveCar(1);
-      console.log(selectCar)
-    });
+  async addEvents() {
+    this.removeCar();
+    this.selectCar();
+  }
+  async selectCar() {
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as Element;
+      if (target.classList.contains('button-select')) {
+        const idCar = +target.id.split('button-select-')[1];
+        const selectedCar = await garageApi.getCar(idCar);
 
-    
+        Management.disabledUpdateField('create-name', 'create-color', 'button-create', true);
+        (<HTMLInputElement>document.getElementById("update-name")).value = selectedCar.name;
+        (<HTMLInputElement>document.getElementById("update-color")).value = selectedCar.color;
+        Management.disabledUpdateField('update-name', 'update-color', 'button-update', false);
+
+        Management.updateCar(idCar)
+      }
+    })
   }
 
-  render() {
+  async removeCar() {
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as Element;
+      if (target.classList.contains('button-delete')) {
+        const idButton = +target.id.split('button-delete-')[1];
+        await garageApi.deleteCar(idButton);
+        await winnersApi.deleteWinner(idButton);
+        await Garage.updateStateGarage();
+
+        const garagePage = document.querySelector<HTMLElement>('.garage');
+        garagePage!.innerHTML = Garage.render();
+      }
+    })
+  }
+
+  render({ id, name, color, isEngineStarted }: ICar) {
     return `
     <div class="garage__car">
           <div class="car__info">
-            <button class="aaa">select</button>
-            <button>remove</button>
-            <h3>Tesla</h3>
+            <button class="button-select" id="button-select-${id}">select</button>
+            <button class="button-delete" id="button-delete-${id}">remove</button>
+            <h3>${name}</h3>
           </div>
           <div class="car__road">
             <div class="road__buttons">
@@ -24,7 +54,7 @@ class Car {
               <button>B</button>
             </div>
               <div class="road__car">
-                <svg class="car" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                <svg class="car" fill="${color}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
                   y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
                   <metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
                   <g>

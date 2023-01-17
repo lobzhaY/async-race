@@ -47,7 +47,7 @@ button {
 }
 
 button:disabled {
-  pointer-events: none;
+  cursor: not-allowed;
 }
 
 button:hover {
@@ -73,7 +73,6 @@ input[type=text] {
     outline: none;
   } 
   &:disabled {
-    cursor: none;
     background-color: $color7;
   } 
 }

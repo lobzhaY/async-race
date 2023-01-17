@@ -1,3 +1,4 @@
+import { CarBody } from "../../interface/interface";
 import { GARAGE } from "../index";
 
 class GarageApi {
@@ -14,14 +15,10 @@ class GarageApi {
     return (await fetch(`${GARAGE}/${id}`)).json();
   }
 
-  async createCar(/* body */) {
-    /* {
-    name: string,
-    color: string
-  } */
+  async createCar(body: CarBody) {
     return (await fetch(GARAGE, {
       method: 'POST',
-      /* body: JSON.stringify(body), */
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json'
       },
@@ -32,14 +29,10 @@ class GarageApi {
     return (await fetch(`${GARAGE}/${id}`, { method: 'DELETE'})).json();
   }
 
-  async updateCar(id: number /*, body */) {
-    /* {
-    name: string,
-    color: string
-  } */
+  async updateCar(id: number, body: CarBody) {
     return (await fetch(`${GARAGE}/${id}`, {
       method: 'PUT',
-      /* body: JSON.stringify(body), */
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json'
       },

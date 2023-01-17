@@ -1,10 +1,13 @@
+import { IWinner } from "../interface/interface";
+
 class Winner {
 
-  render() {
+  render(winner: IWinner, index: number) {
     return `
     <div class="table-row">
-      <p class="table-row__item-num table-row__items">1</p>
-      <p class="table-row__item-car table-row__items"><svg class="winner-car" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+      <p class="table-row__item-num table-row__items">${index + 1}</p>
+      <p class="table-row__item-car table-row__items">
+      <svg class="winner-car" fill=${winner.car.color} version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
               y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
         <metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
           <g>
@@ -21,9 +24,9 @@ class Winner {
           </g>
         </svg>
       </p>
-      <p class="table-row__item-name table-row__items">Aston Martin</p>
-      <p class="table-row__item-wins table-row__items">1</p>
-      <p class="table-row__item-time table-row__items">2.83</p>
+      <p class="table-row__item-name table-row__items">${winner.car.name}</p>
+      <p class="table-row__item-wins table-row__items">${winner.wins}</p>
+      <p class="table-row__item-time table-row__items">${winner.time}</p>
     </div>
     `
   };

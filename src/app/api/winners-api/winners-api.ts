@@ -1,55 +1,50 @@
-import { WINNERS } from "../index";
+import { IWinners, WinnerBody } from "../../interface/interface";
+import { garageApi, WINNERS } from "../index";
 
 class Winners {
-  /* getSortOrder(sort: number, order: number) {
+   getSortOrder(sort: string | undefined | null, order: string | undefined | null) {
     if (sort && order) return `&_sort=${sort}&_order=${order}`
     return '';
   }
 
 
-  async getWinners(/* { page, limit = 10, sort, order} *//*) {
-    const res = await fetch(`${WINNERS}?_page=${page}&_limit=${limit}${getSortOrder(sort, order)}`);
+  async getWinners( { page, limit = 10, sort, order}: IWinners ) {
+    const res = await fetch(`${WINNERS}?_page=${page}&_limit=${limit}${this.getSortOrder(sort, order)}`);
     const items = await res.json();
 
     return {
-      items: await Promise.all(items.map(async winner => ({ ...winner, car: await getCar(winner.id)})));
+      items: await Promise.all(items.map(async (winner: WinnerBody) => ({ ...winner, car: await garageApi.getCar(winner.id)}))),
       count: res.headers.get('X-Total-Count')
     }
-  } */
+  } 
 
   async getWinner(id: number) {
     return (await fetch(`${WINNERS}/${id}`)).json();
   }
 
-  async createWinner(/* body */) {
-    /* {
-    id: number,
-    wins: number,
-    time: number
-  } */
-
+  /* async createWinner(body: WinnerBody) {
   return (await fetch(WINNERS, {
     method: 'POST',
-    /* body: JSON.stringify(body), */
+    body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json'
     }
   })).json();
   }
-
+ */
  async deleteWinner(id: number) {
   return (await fetch(`${WINNERS}/${id}`, { method: 'DELETE'})).json();
  } 
 
- async updateWinner(id: number /* , body */) {
+/*  async updateWinner(id: number, body: WinnerBody) {
   return (await fetch(`${WINNERS}/${id}`, {
     method: 'PUT',
-    /* body: JSON.stringify(body), */
+    body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json'
     }
   })).json();
- }
+ } */
 
  async getWinnerStatus(id: number) {
   return (await fetch(`${WINNERS}/${id}`)).status;
