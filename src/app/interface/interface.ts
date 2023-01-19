@@ -4,7 +4,7 @@ export interface CarBody {
 }
 
 export interface WinnerBody {
-  id: number,
+  id: number | undefined,
   wins: number,
   time: number
 }
@@ -32,4 +32,36 @@ export interface IWinner {
   id: number,
   time: number,
   wins: number,
+}
+
+export interface IState {
+  id?: number,
+}
+
+export interface IRace {
+  success: boolean, 
+  id: number, 
+  time: number
+}
+
+export interface TotalWinner {
+  name?: string | undefined,
+  id?: number | undefined,
+  color?: string | undefined,
+  time: number
+}
+
+export interface IStore {
+  animation: {
+    [key: number]: IState,
+  },
+  cars: ICar[],
+  carsCount: string | null,
+  carsPage: number,
+  sortBy: null,
+  sortOrder: null,
+  view: string,
+  winners: IWinner[],
+  winnersCount: string | null,
+  winnersPage: number
 }

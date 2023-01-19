@@ -1,13 +1,19 @@
 import { engineApi, garageApi, winnersApi } from "../api/index";
-import { CarBody, ICar } from "../interface/interface";
+import { CarBody, ICar, IState, TotalWinner } from "../interface/interface";
 import { Garage } from "../pages/index";
-import { Management } from "./index";
+import store from "../store/store";
+import carAnimationUtils from "../utils/animation-car-utils";
+import { Management, WinnerMessage } from "./index";
+import winner from "./winner";
 
 class Car {
   async addEvents() {
     this.removeCar();
     this.selectCar();
+    this.engineCar();
+    this.race();
   }
+
   async selectCar() {
     document.body.addEventListener('click', async (e) => {
       const target = e.target as Element;
@@ -40,6 +46,83 @@ class Car {
     })
   }
 
+  async startDriving(id: number) {
+    const startButton = ((document.getElementById(`start-car-${id}`)) as HTMLButtonElement);
+    startButton.disabled = true;
+
+    const { velocity, distance } = await engineApi.startEngine(id);
+    const time = Math.round(distance / velocity);
+
+    ((document.getElementById(`stop-car-${id}`)) as HTMLButtonElement).disabled = false;
+
+    const car = document.getElementById(`car-${id}`);
+    const flag = document.getElementById(`finish-${id}`);
+
+    const distanceHTML = Math.floor(carAnimationUtils.getDistanceBetweenElements(car!, flag!)) + 100;
+
+    store.animation[id!] = carAnimationUtils.animationCar(car!, distanceHTML, time);
+    const { success } = await engineApi.driveCar(id);
+    if (!success) {
+      window.cancelAnimationFrame(store.animation[id].id!);
+    }
+    return { success, id, time };
+  }
+
+  async stopDriving(id: number) {
+    const stopButton = ((document.getElementById(`stop-car-${id}`)) as HTMLButtonElement);
+    stopButton.disabled = true;
+
+    await engineApi.stopEngine(id);
+    ((document.getElementById(`start-car-${id}`)) as HTMLButtonElement).disabled = false;
+
+    const car = document.getElementById(`car-${id}`);
+    car!.style.transform = `translateX(0)`;
+    if (store.animation[id]) {
+      window.cancelAnimationFrame(store.animation[id].id!);
+    }
+  }
+
+  async race() {
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as Element;
+      if (target.classList.contains('race-button')) {
+    ((document.getElementById('race')) as HTMLButtonElement).disabled = true;
+    
+    const winner = await carAnimationUtils.race();
+        await winnersApi.saveWinner(winner);
+        ((document.getElementById('message')) as HTMLElement).innerHTML = WinnerMessage.render(winner);
+        ((document.getElementById('message')) as HTMLElement).style.display = 'block';
+        ((document.getElementById('reset')) as HTMLButtonElement).disabled = false;
+      }
+
+      if (target.classList.contains('reset-button')) {
+        ((document.getElementById('race')) as HTMLButtonElement).disabled = false;
+        ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
+        ((document.getElementById('message')) as HTMLElement).innerHTML = '';
+        ((document.getElementById('message')) as HTMLElement).style.display = 'none';
+
+        store.cars.map((e) => {
+          this.stopDriving(e.id);
+        })
+        
+      }
+    })
+  }
+
+  async engineCar() {
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as Element;
+      if (target.classList.contains('start-button')) {
+        const id = parseInt(target.id.split('start-car-')[1]);
+        this.startDriving(id);
+      }
+      if (target.classList.contains('stop-button')) {
+        const id = parseInt(target.id.split('stop-car-')[1]);
+        this.stopDriving(id);
+      }
+    })
+  }
+
   render({ id, name, color, isEngineStarted }: ICar) {
     return `
     <div class="garage__car">
@@ -50,29 +133,39 @@ class Car {
           </div>
           <div class="car__road">
             <div class="road__buttons">
-              <button>A</button>
-              <button>B</button>
+              <button class="start-button" id="start-car-${id}">A</button>
+              <button class="stop-button" id="stop-car-${id}" disabled=true>B</button>
             </div>
               <div class="road__car">
-                <svg class="car" fill="${color}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                  y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
-                  <metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
-                  <g>
-                    <g>
-                      <g>
-                        <path
-                          d="M181.1,526.5c-40.8,0-73.9,33.1-73.9,73.9c0,3.1,0.3,6.2,0.7,9.3c4.6,36.5,35.6,64.6,73.3,64.6c38.7,0,70.4-29.7,73.6-67.6c0.2-2.1,0.3-4.2,0.3-6.3C255,559.6,221.9,526.5,181.1,526.5z M144.1,572.6l15.1,15.1c-1.2,2-2.1,4.2-2.7,6.5h-21.3C136.3,586.1,139.4,578.7,144.1,572.6z M135.1,606.9h21.4c0.6,2.3,1.5,4.4,2.7,6.4l-15.1,15.1C139.4,622.3,136.3,615,135.1,606.9z M174.7,646.4c-8-1.1-15.3-4.3-21.4-8.9l15-15c2,1.2,4.1,2,6.4,2.6V646.4z M174.7,575.8c-2.3,0.6-4.5,1.5-6.5,2.7l-15.1-15.1c6.2-4.7,13.5-7.8,21.6-8.9V575.8z M187.5,554.5c8.1,1.1,15.4,4.2,21.6,8.9L194,578.5c-2-1.2-4.2-2.1-6.5-2.7L187.5,554.5L187.5,554.5z M187.5,646.3V625c2.3-0.6,4.4-1.4,6.4-2.6l15,15C202.8,642.1,195.5,645.2,187.5,646.3z M218.1,628.5l-15.2-15.2c1.2-2,2.2-4.1,2.8-6.4h21.3C225.8,614.9,222.8,622.4,218.1,628.5z M205.7,594.1c-0.6-2.3-1.5-4.5-2.7-6.5l15.1-15.1c4.7,6.2,7.7,13.5,8.9,21.6L205.7,594.1L205.7,594.1z" />
-                        <path
-                          d="M795.1,526.5c-40.8,0-74,33.1-74,73.9c0,3.1,0.3,6.2,0.7,9.3c4.6,36.5,35.6,64.6,73.3,64.6c38.7,0,70.4-29.7,73.6-67.6c0.2-2.1,0.3-4.2,0.3-6.3C869.1,559.6,836,526.5,795.1,526.5z M758.1,572.6l15.1,15.1c-1.2,2-2.1,4.2-2.7,6.5h-21.3C750.3,586.1,753.4,578.7,758.1,572.6z M749.1,606.9h21.4c0.6,2.3,1.5,4.4,2.7,6.4l-15.1,15.1C753.4,622.3,750.3,615,749.1,606.9z M788.7,646.4c-8-1.1-15.3-4.3-21.4-8.9l15-15c2,1.2,4.1,2,6.4,2.6V646.4z M788.7,575.8c-2.3,0.6-4.5,1.5-6.5,2.7l-15.1-15.1c6.2-4.7,13.5-7.8,21.6-8.9V575.8z M801.5,554.5c8.1,1.1,15.4,4.2,21.6,8.9l-15.1,15.1c-2-1.2-4.2-2.1-6.5-2.7V554.5z M801.5,646.3V625c2.3-0.6,4.4-1.4,6.4-2.6l15,15C816.8,642.1,809.5,645.2,801.5,646.3z M832.1,628.5L817,613.4c1.2-2,2.2-4.1,2.7-6.4H841C839.8,614.9,836.8,622.4,832.1,628.5z M819.7,594.1c-0.6-2.3-1.5-4.5-2.7-6.5l15.1-15.1c4.7,6.2,7.7,13.5,8.9,21.6L819.7,594.1L819.7,594.1z" />
-                        <path
-                          d="M972.7,488.2v-54.7c0-8.8-6.4-16.3-15.1-17.6c-20.9-3.3-57.8-9.4-74.5-14.6c-23.8-7.3-115.9-46.3-147.8-53.6c-31.9-7.3-175.7-46.4-313.3,1.3c-23.3,8.1-128.1,58.2-189.7,84.2c-18.2,0.4-197.8,37.8-207.4,63.5c-9.6,25.7-12.6,38.1-14.3,44.7c-1.8,6.5,0,37.7,13.3,59.4c13.6,7.7,39.8,12.9,70.1,16.3c-0.3-1.8-0.7-3.7-1-5.5c-0.5-4-0.8-7.7-0.8-11.1c0-49,39.8-88.8,88.8-88.8c49,0,88.8,39.8,88.8,88.8c0,2.5-0.2,5-0.4,7.5c-0.5,5.5-1.5,10.8-2.9,16c0.1,0,0.2,0,0.2,0l440.8-8.9c-0.2-1.1-0.5-2.3-0.6-3.4c-0.5-4-0.8-7.6-0.8-11.1c0-49,39.8-88.8,88.8-88.8c49,0,88.8,39.8,88.8,88.8c0,0.2,0,0.3,0,0.5l1.9-0.2l75.4-14.2c0,0,28.9-15.4,28.9-57.6C990,500.8,972.7,488.2,972.7,488.2z M535.4,436.3l-164.6,5c3-24.7-11.6-30.2-11.6-30.2c65.4-59.4,197.3-61.4,197.3-61.4L535.4,436.3z M720.2,428.8l-150,5l13.6-84.1c77.5-1,121.8,16.1,121.8,16.1l22.1,35.7L720.2,428.8z M804.7,428.3h-41.8l-41.8-57.4c31.4,12.5,56.4,24.8,71.4,32.5C801.6,408.1,806.5,418.2,804.7,428.3z" />
-                      </g>
-                    </g>
-                  </g>
-                </svg>
+                <svg class="car" id="car-${id}" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+   viewBox="0 0 404.243 404.243" style="enable-background:new 0 0 404.243 404.243;" xml:space="preserve">
+<g>
+  <path style="fill:${color};" d="M394.444,252.603l-4.552-0.091v-15.73c3.752-1.441,6.421-5.069,6.421-9.329
+    c0-4.331-2.759-8.008-6.611-9.398c-2.127-28.499-23.319-51.872-51.973-56.469l-49.959-8.014l-10.998-14.737
+    c-17.819-23.876-45.104-38.413-74.86-39.882c-0.164-0.008-0.329-0.012-0.493-0.012h-50.743
+    c-69.173,0-127.165,48.748-141.453,113.692C4.065,213.029,0,217.332,0,222.592v4.75c0,2.7,1.075,5.146,2.815,6.945
+    c-0.848,4.514-1.311,9.161-1.311,13.917v6.798c0,5.523,4.478,10,10,10h4.233l29.387,0.59c0.925,22.052,19.146,39.71,41.421,39.71
+    c21.713,0,39.57-16.778,41.314-38.049l131.655,2.643c0.096,0.003,0.194,0.01,0.289,0.01c0.018,0,0.036-0.003,0.054-0.003
+    l16.625,0.334c3.087,19.836,20.283,35.065,40.971,35.065c20.113,0,36.922-14.397,40.677-33.426l35.911,0.721
+    c0.068,0.001,0.137,0.002,0.205,0.002c5.43,0,9.885-4.346,9.994-9.799C404.352,257.28,399.966,252.713,394.444,252.603z
+     M338.92,263.837c0,11.836-9.63,21.466-21.466,21.466c-11.837,0-21.467-9.63-21.467-21.466c0-11.836,9.63-21.466,21.467-21.466
+    C329.29,242.371,338.92,252.001,338.92,263.837z M65.188,265.996l9.37,0.188c1.095,5.623,6.043,9.87,11.987,9.87
+    c5.773,0,10.598-4.009,11.875-9.391l9.354,0.188c-1.473,10.411-10.419,18.452-21.23,18.452
+    C75.438,285.303,66.275,276.822,65.188,265.996z M150.676,118.94h50.488c23.684,1.24,45.389,12.841,59.579,31.856l13.424,17.987
+    c1.556,2.084,3.862,3.481,6.431,3.893l53.964,8.656c19.334,3.102,33.654,18.824,35.188,38.026
+    c-12.579-14.72-31.253-23.841-51.881-23.841c-32.594,0-60.256,23.144-66.75,54.207l-94.805-1.903v-15.236
+    c0-32.9-26.766-59.667-59.666-59.667H76.79c-12.242,0-23.799,2.956-34.027,8.162C64.418,143.949,104.679,118.94,150.676,118.94z
+     M21.596,245.003c1.665-29,25.785-52.085,55.194-52.085h19.856c21.872,0,39.666,17.794,39.666,39.667v12.418H21.596z
+     M317.454,222.371c-18.114,0-33.542,11.68-39.176,27.9l-6.652-0.134c5.896-20.068,24.514-34.619,46.242-34.619
+    c22.357,0,41.47,15.142,46.758,36.486l-7.479-0.15C351.994,234.814,336.153,222.371,317.454,222.371z"/>
+  <circle style="fill:${color};" cx="317.454" cy="263.837" r="12.217"/>
+  <path style="fill:${color};" d="M171.34,185.578h81.05c3.783,0,7.243-2.135,8.939-5.518c1.695-3.382,1.338-7.432-0.926-10.464
+    l-8.761-11.738l0.001,0.001c-12.25-16.415-31.008-26.409-51.466-27.419c-0.164-0.008-0.329-0.012-0.493-0.012H171.34
+    c-5.522,0-10,4.477-10,10v35.15C161.34,181.101,165.817,185.578,171.34,185.578z M181.34,150.428h18.087
+    c12.53,0.679,24.146,6.123,32.632,15.15H181.34V150.428z"/>
               </div>
               <div class="road__finish">
-                <svg class="flag" xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                <svg id="finish-${id}" class="flag" xmlns="http://www.w3.org/2000/svg" height="48" width="48">
                   <path
                     d="M10 42V8h17.15l.95 4.3H40v18.5H27.2l-.95-4.25H13V42Zm15-22.6Zm4.75 8.4H37V15.3H25.55L24.6 11H13v12.55h15.8Z" />
                 </svg>

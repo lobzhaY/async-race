@@ -2,17 +2,17 @@ import { ENGINE } from "../index";
 
 class EngineApi {
 
-  //PATCH
   async startEngine(id: number) {
-    return (await fetch(`${ENGINE}?=${id}&status=started`)).json();
+   return (await fetch(`${ENGINE}?id=${id}&status=started`, { method: 'PATCH' })).json();
   }
 
   async stopEngine(id: number) {
-    return (await fetch(`${ENGINE}?=${id}&status=stopped`)).json();
+    return (await fetch(`${ENGINE}?id=${id}&status=stopped`, { method: 'PATCH' })).json();
   }
 
+ 
  async driveCar(id: number) {
-    const res = await fetch(`${ENGINE}?id=${id}&status=drive`).catch();
+    const res = await fetch(`${ENGINE}?id=${id}&status=drive`, { method: 'PATCH' }).catch();
     return res.status !== 200 ? { success: false } : { ...(await res.json()) };
   }
 

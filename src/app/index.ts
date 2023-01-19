@@ -1,15 +1,21 @@
 import '../style/app.scss';
 import header from './components/header';
-import { Footer, Header, Management, Car } from './components/index';
+import { Footer, Header, Management, Car, WinnerMessage } from './components/index';
 import { Garage, Winners } from "./pages/index";
 
 const root = document.createElement('div');
 root.id = 'root-container';
-root.innerHTML = `${Header.render()}${Management.render()}${Garage.render()}${Winners.render()}  <div class="garage__pagination">
+root.innerHTML = `${Header.render()}
+${Management.render()}
+${Garage.render()}
+${Winners.render()}  
+<div class="garage__pagination">
 <button class="prev-button" id="prev">prev</button>
 <button class="next-button" id="next">next</button>
 </div>
-${Footer.render()}`;
+${Footer.render()}
+<div class="winner-message" id="message"></div>
+`;
 
 document.body.append(root);
 

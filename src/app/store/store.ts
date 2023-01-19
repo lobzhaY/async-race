@@ -1,9 +1,10 @@
 import { garageApi, winnersApi } from "../api/index";
+import { IStore } from "../interface/interface";
 
 const { items: cars, count: carsCount } = await garageApi.getCars(1);
 const { items: winners, count: winnersCount } = await winnersApi.getWinners({ page: 1});
 
-export default {
+const store: IStore = {
   carsPage: 1,
   cars,
   carsCount,
@@ -15,3 +16,4 @@ export default {
   sortBy: null,
   sortOrder: null,
 };
+export default store;

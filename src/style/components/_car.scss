@@ -14,10 +14,8 @@
   &__road {
     width: 100%;
     height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
- 
+    display: flex;
+    align-items: center; 
   }
 
   &__info {
@@ -127,6 +125,7 @@ h3 {
 .road {
 
   &__buttons {
+    width: 70px;
 
 button {
   background-color: #fbeee0;
@@ -158,20 +157,20 @@ button:active {
   }
 
   &__car {
+   width: calc(100% - 240px);
     height: 100px;
     display: flex;
     align-items: center;
-    justify-content: center;
+ 
 
     .car {
-     width: 100%;
+     width: 20%;
      height: 100%;
-    transform: scale(-1, 1);
     }
   }
 
   &__finish {
-    width: 15%;
+    width: 200px;
     
     .flag {
       fill-rule: "nonzero";

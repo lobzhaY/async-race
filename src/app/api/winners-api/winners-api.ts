@@ -1,4 +1,4 @@
-import { IWinners, WinnerBody } from "../../interface/interface";
+import { IWinners, TotalWinner, WinnerBody } from "../../interface/interface";
 import { garageApi, WINNERS } from "../index";
 
 class Winners {
@@ -13,7 +13,7 @@ class Winners {
     const items = await res.json();
 
     return {
-      items: await Promise.all(items.map(async (winner: WinnerBody) => ({ ...winner, car: await garageApi.getCar(winner.id)}))),
+      items: await Promise.all(items.map(async (winner: WinnerBody) => ({ ...winner, car: await garageApi.getCar(winner.id!)}))),
       count: res.headers.get('X-Total-Count')
     }
   } 
@@ -22,7 +22,7 @@ class Winners {
     return (await fetch(`${WINNERS}/${id}`)).json();
   }
 
-  /* async createWinner(body: WinnerBody) {
+  async createWinner(body: WinnerBody) {
   return (await fetch(WINNERS, {
     method: 'POST',
     body: JSON.stringify(body),
@@ -31,12 +31,12 @@ class Winners {
     }
   })).json();
   }
- */
+
  async deleteWinner(id: number) {
   return (await fetch(`${WINNERS}/${id}`, { method: 'DELETE'})).json();
  } 
 
-/*  async updateWinner(id: number, body: WinnerBody) {
+ async updateWinner(id: number, body: WinnerBody) {
   return (await fetch(`${WINNERS}/${id}`, {
     method: 'PUT',
     body: JSON.stringify(body),
@@ -44,28 +44,30 @@ class Winners {
       'Content-Type': 'application/json'
     }
   })).json();
- } */
+ } 
 
  async getWinnerStatus(id: number) {
   return (await fetch(`${WINNERS}/${id}`)).status;
  }
-/*  async saveWinner({ id, time }) {
-  const winnerStatus = await this.getWinnerStatus(id);
-  if (winnerStatus === 404) {
+
+ async saveWinner({ id, time }: TotalWinner) {
+  const winnerStatus = await this.getWinnerStatus(id!);
+   if (winnerStatus === 404) {
     await this.createWinner({
       id,
       wins: 1,
       time,
     });
   } else {
-    const winner = await this.getWinner(id);
-    await this.updateWinner(id, {
+    const winner = await this.getWinner(id!);
+    await this.updateWinner(id!, {
       id,
       wins: winner.wins + 1,
       time: time < winner.time ? time : winner.time,
     });
   }
- } */
+  
+ } 
 
 }
 const winnersApi = new Winners();

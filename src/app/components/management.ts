@@ -9,13 +9,13 @@ class Management {
     this.disabledUpdateField('update-name', 'update-color', 'button-update', true);
     this.generateCars();
   }
+  
   generateCars() {
     //((document.getElementById('generate')) as HTMLButtonElement).disabled = true;
     document.getElementById('generate')?.addEventListener('click', async (e) => {
       const cars = carCreateUtils.generateRandomCars();
       await Promise.all(cars.map(async car => await garageApi.createCar(car)));
       await Garage.updateStateGarage();
-      console.log(cars)
       const garagePage = document.querySelector<HTMLElement>('.garage');
       garagePage!.innerHTML = Garage.render();
       ((document.getElementById('generate')) as HTMLButtonElement).disabled = false;
@@ -96,8 +96,8 @@ class Management {
         <button id="button-update">update</button>
       </div>
       <div class="row">
-        <button>race</button>
-        <button>reset</button>
+        <button class="race-button" id="race">race</button>
+        <button class="reset-button" id="reset" disabled=true>reset</button>
         <button id="generate">generate cars</button>
       </div>
     </div>
