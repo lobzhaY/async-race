@@ -9,12 +9,23 @@ root.innerHTML = `${Header.render()}
 ${Management.render()}
 ${Garage.render()}
 ${Winners.render()}  
-<div class="garage__pagination">
-<button class="prev-button" id="prev">prev</button>
-<button class="next-button" id="next">next</button>
+<div class="all-pagination">
+
+  <div class="garage__pagination">
+  <div class="pagination-container">
+    <button class="prev-button" id="prev-garage">prev</button>
+    <button class="next-button" id="next-garage">next</button>
+    </div>
+  </div>
+  <div class="winners__pagination">
+  <div class="pagination-container">
+    <button class="prev-button" id="prev-winners">prev</button>
+    <button class="next-button" id="next-winners">next</button>
+  </div>
+  </div>
+ 
 </div>
 ${Footer.render()}
-<div class="winner-message" id="message"></div>
 `;
 
 document.body.append(root);
@@ -28,6 +39,7 @@ await Car.addEvents();
 //await Management.createNewCar();
 await Garage.prevPageClick();
 await Garage.nextPageClick();
+await Winners.addevents();
 
 
 

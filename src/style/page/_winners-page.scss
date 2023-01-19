@@ -1,7 +1,7 @@
 @import "../base/variabless";
 
 .winners {
-  width: 90%;
+  width: 100%;
   margin: 25px auto;
 
     &__title {
@@ -34,6 +34,8 @@
   align-items: center;
 }
 .table-row__item {
+  width: 100%;
+  height: 100%;
   color: $color8; 
   font-family: $fonts; 
   font-size: 20px; 
@@ -43,9 +45,13 @@
   text-transform: uppercase;
   margin: 0;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .table-row__item-icon {
   fill: $color8;
+  display: none;
 }
 .table-row__item-num {
   width: 10%;
@@ -64,9 +70,12 @@
 }
 .table-row__item-wins {
   width: 10%;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.garage__pagination {
-		width: 50%;
+.pagination-container {
+		width: 100%;
     margin: 20px auto;
     display: flex;
     justify-content: space-evenly;
@@ -134,4 +143,14 @@
   -0.5px -0.5px 0 hsl(80, 70%, 35%),
   -1px -1px 0.5px hsl(80, 70%, 35%),
   -1px -1px 1px hsl(80, 10%, 15%);
+}
+
+.winners__pagination {
+  display: none;
+}
+.all-pagination {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

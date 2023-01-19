@@ -1,6 +1,6 @@
-import { garageApi } from "../api/index";
+import { garageApi, winnersApi } from "../api/index";
 import { CarBody } from "../interface/interface";
-import { Garage } from "../pages/index";
+import { Garage, Winners } from "../pages/index";
 import carCreateUtils from "../utils/create-car-utils";
 
 class Management {
@@ -46,6 +46,7 @@ class Management {
 
       await garageApi.updateCar(idCar, newCar);
       await Garage.updateStateGarage();
+      await Winners.updateStateWinners();
 
       const garagePage = document.querySelector<HTMLElement>('.garage');
       garagePage!.innerHTML = Garage.render();
@@ -54,6 +55,7 @@ class Management {
       this.disabledUpdateField('create-name', 'create-color', 'button-create', false);
       (<HTMLInputElement>document.getElementById("update-name")).value = '';
       (<HTMLInputElement>document.getElementById("update-color")).value = 'aaaaaa';
+
     })
   }
 

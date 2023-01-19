@@ -1,6 +1,6 @@
 import { engineApi, garageApi, winnersApi } from "../api/index";
 import { CarBody, ICar, IState, TotalWinner } from "../interface/interface";
-import { Garage } from "../pages/index";
+import { Garage, Winners } from "../pages/index";
 import store from "../store/store";
 import carAnimationUtils from "../utils/animation-car-utils";
 import { Management, WinnerMessage } from "./index";
@@ -26,7 +26,7 @@ class Car {
         (<HTMLInputElement>document.getElementById("update-color")).value = selectedCar.color;
         Management.disabledUpdateField('update-name', 'update-color', 'button-update', false);
 
-        Management.updateCar(idCar)
+        Management.updateCar(idCar);
       }
     })
   }
@@ -39,6 +39,7 @@ class Car {
         await garageApi.deleteCar(idButton);
         await winnersApi.deleteWinner(idButton);
         await Garage.updateStateGarage();
+        await Winners.updateStateWinners();
 
         const garagePage = document.querySelector<HTMLElement>('.garage');
         garagePage!.innerHTML = Garage.render();
@@ -93,6 +94,7 @@ class Car {
         ((document.getElementById('message')) as HTMLElement).innerHTML = WinnerMessage.render(winner);
         ((document.getElementById('message')) as HTMLElement).style.display = 'block';
         ((document.getElementById('reset')) as HTMLButtonElement).disabled = false;
+        await Winners.updateStateWinners();
       }
 
       if (target.classList.contains('reset-button')) {
@@ -123,7 +125,7 @@ class Car {
     })
   }
 
-  render({ id, name, color, isEngineStarted }: ICar) {
+  render({ id, name, color }: ICar) {
     return `
     <div class="garage__car">
           <div class="car__info">

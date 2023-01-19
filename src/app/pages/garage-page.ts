@@ -13,15 +13,15 @@ class Garage {
     const maxCarsPage: number = store.carsPage * 7;
 
      if (maxCarsPage < parseInt(store.carsCount!)) {
-      (document.getElementById('next') as HTMLButtonElement).disabled = false;
+      (document.getElementById('next-garage') as HTMLButtonElement).disabled = false;
      } else {
-      (document.getElementById('next') as HTMLButtonElement).disabled = true;
+      (document.getElementById('next-garage') as HTMLButtonElement).disabled = true;
      }
     
      if (store.carsPage > 1) {
-      (document.getElementById('prev') as HTMLButtonElement).disabled = false;
+      (document.getElementById('prev-garage') as HTMLButtonElement).disabled = false;
      } else {
-      (document.getElementById('prev') as HTMLButtonElement).disabled = true;
+      (document.getElementById('prev-garage') as HTMLButtonElement).disabled = true;
      }
   }
 
@@ -34,9 +34,13 @@ class Garage {
           await this.updateStateGarage();
           const garagePage = document.querySelector<HTMLElement>('.garage');
           garagePage!.innerHTML = this.render();
+
+          ((document.getElementById('race')) as HTMLButtonElement).disabled = false;
+        ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
+        
         } else {
-          store.winnersPage -= 1;
-         // await updateStateWinners();
+          store.winnersPage--;
+         await Winners.updateStateWinners();
          const winnersPage = document.querySelector<HTMLElement>('.winners');
          winnersPage!.innerHTML = Winners.render();
         }
@@ -53,9 +57,12 @@ class Garage {
           await this.updateStateGarage();
           const garagePage = document.querySelector<HTMLElement>('.garage');
           garagePage!.innerHTML = this.render();
+
+          ((document.getElementById('race')) as HTMLButtonElement).disabled = false;
+        ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
         } else if (store.view === 'winners') {
           store.winnersPage++;
-         // await updateStateWinners();
+          await Winners.updateStateWinners();
          const winnersPage = document.querySelector<HTMLElement>('.winners');
          winnersPage!.innerHTML = Winners.render();
         }
@@ -75,6 +82,8 @@ class Garage {
       </div>
       </div>
     </div>
+
+    <div class="winner-message" id="message"></div>
   </main>
     `  
   }
