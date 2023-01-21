@@ -3,7 +3,7 @@ import { IRace, IState, TotalWinner } from "../interface/interface";
 import store from "../store/store";
 
 class CarAnimationUtils {
- animationCar(car: HTMLElement, distance: number, timeAnimation: number) {
+  animationCar(car: HTMLElement, distance: number, timeAnimation: number) {
     let start: number | null = null;
     const state: IState = {};
 
@@ -18,13 +18,13 @@ class CarAnimationUtils {
       if (passed < distance) {
         state.id = window.requestAnimationFrame(stepAnimation);
       }
-      
+
     }
     state.id = window.requestAnimationFrame(stepAnimation);
     return state;
-  } 
+  }
 
- async raceAll(promises: Promise<IRace>[], idArr: number[]): Promise<TotalWinner> {
+  async raceAll(promises: Promise<IRace>[], idArr: number[]): Promise<TotalWinner> {
     const { success, id, time } = await Promise.race(promises);
     if (!success) {
       const failIndex = idArr.findIndex(i => i === id);
@@ -33,7 +33,7 @@ class CarAnimationUtils {
       return this.raceAll(restPromises, restIdArr);
     }
     return { ...store.cars.find(car => car.id === id), time: +(time / 1000).toFixed(2) };
-  } 
+  }
 
   async race(): Promise<TotalWinner> {
     const driveAll = store.cars.map((elem) => {
@@ -41,8 +41,8 @@ class CarAnimationUtils {
     })
     const winner = await this.raceAll(driveAll, store.cars.map(car => car.id));
     return winner;
-  } 
-  
+  }
+
   getPositionCenter(elem: HTMLElement) {
     const { top, left, width, height } = elem.getBoundingClientRect();
     return {
@@ -55,7 +55,7 @@ class CarAnimationUtils {
     const xPosition = this.getPositionCenter(x);
     const yPosition = this.getPositionCenter(y);
     return Math.hypot(xPosition.x - yPosition.x, xPosition.y - yPosition.y);
-  } 
+  }
 
 }
 const carAnimationUtils = new CarAnimationUtils();

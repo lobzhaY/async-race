@@ -1,12 +1,11 @@
-import { winnersApi } from "../api/index";
 import { IWinner } from "../interface/interface";
 import store from "../store/store";
 
 class Winner {
- 
+
 
   render(winner: IWinner, index: number) {
-   console.log(store.winnersPage);
+    console.log(store.winnersPage);
     return `
     <div class="table-row">
       <p class="table-row__item-num table-row__items">${store.winnersPage === 1 ? ++index : ++index + (store.winnersPage * 10 - 10)}</p>

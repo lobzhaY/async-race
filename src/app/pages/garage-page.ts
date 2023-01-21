@@ -1,28 +1,28 @@
 import { garageApi } from "../api/index";
-import { Header, Management, Car, Footer } from "../components/index";
+import { Car } from "../components/index";
 import { ICar } from "../interface/interface";
 import store from "../store/store";
 import { Winners } from "./index";
 
 class Garage {
- async updateStateGarage() {
+  async updateStateGarage() {
     const { items, count } = await garageApi.getCars(store.carsPage);
     store.cars = items;
     store.carsCount = count;
 
     const maxCarsPage: number = store.carsPage * 7;
 
-     if (maxCarsPage < parseInt(store.carsCount!)) {
+    if (maxCarsPage < parseInt(store.carsCount!)) {
       (document.getElementById('next-garage') as HTMLButtonElement).disabled = false;
-     } else {
+    } else {
       (document.getElementById('next-garage') as HTMLButtonElement).disabled = true;
-     }
-    
-     if (store.carsPage > 1) {
+    }
+
+    if (store.carsPage > 1) {
       (document.getElementById('prev-garage') as HTMLButtonElement).disabled = false;
-     } else {
+    } else {
       (document.getElementById('prev-garage') as HTMLButtonElement).disabled = true;
-     }
+    }
   }
 
   prevPageClick() {
@@ -36,13 +36,13 @@ class Garage {
           garagePage!.innerHTML = this.render();
 
           ((document.getElementById('race')) as HTMLButtonElement).disabled = false;
-        ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
-        
+          ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
+
         } else {
           store.winnersPage--;
-         await Winners.updateStateWinners();
-         const winnersPage = document.querySelector<HTMLElement>('.winners');
-         winnersPage!.innerHTML = Winners.render();
+          await Winners.updateStateWinners();
+          const winnersPage = document.querySelector<HTMLElement>('.winners');
+          winnersPage!.innerHTML = Winners.render();
         }
       }
     })
@@ -59,19 +59,19 @@ class Garage {
           garagePage!.innerHTML = this.render();
 
           ((document.getElementById('race')) as HTMLButtonElement).disabled = false;
-        ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
+          ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
         } else if (store.view === 'winners') {
           store.winnersPage++;
           await Winners.updateStateWinners();
-         const winnersPage = document.querySelector<HTMLElement>('.winners');
-         winnersPage!.innerHTML = Winners.render();
+          const winnersPage = document.querySelector<HTMLElement>('.winners');
+          winnersPage!.innerHTML = Winners.render();
         }
       }
     })
   }
 
   render() {
-    return  `
+    return `
     <main class="garage">
     <div class="container">
       <h1 class="title">Garage ( <span class="winners-num"">${store.carsCount}</span> )</h1>
@@ -85,7 +85,7 @@ class Garage {
 
     <div class="winner-message" id="message"></div>
   </main>
-    `  
+    `
   }
 };
 

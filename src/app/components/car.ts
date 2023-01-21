@@ -1,10 +1,9 @@
 import { engineApi, garageApi, winnersApi } from "../api/index";
-import { CarBody, ICar, IState, TotalWinner } from "../interface/interface";
+import { ICar } from "../interface/interface";
 import { Garage, Winners } from "../pages/index";
 import store from "../store/store";
 import carAnimationUtils from "../utils/animation-car-utils";
 import { Management, WinnerMessage } from "./index";
-import winner from "./winner";
 
 class Car {
   async addEvents() {
@@ -87,9 +86,9 @@ class Car {
     document.body.addEventListener('click', async (e) => {
       const target = e.target as Element;
       if (target.classList.contains('race-button')) {
-    ((document.getElementById('race')) as HTMLButtonElement).disabled = true;
-    
-    const winner = await carAnimationUtils.race();
+        ((document.getElementById('race')) as HTMLButtonElement).disabled = true;
+
+        const winner = await carAnimationUtils.race();
         await winnersApi.saveWinner(winner);
         ((document.getElementById('message')) as HTMLElement).innerHTML = WinnerMessage.render(winner);
         ((document.getElementById('message')) as HTMLElement).style.display = 'block';
@@ -106,7 +105,7 @@ class Car {
         store.cars.map((e) => {
           this.stopDriving(e.id);
         })
-        
+
       }
     })
   }

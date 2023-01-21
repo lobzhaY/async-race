@@ -1,14 +1,14 @@
 import { winnersApi } from "../api/index";
-import { Footer, Header, Winner } from "../components/index";
+import { Winner } from "../components/index";
 import store from "../store/store";
 
 class Winners {
-  
+
   async updateStateWinners() {
 
     const { items, count } = await winnersApi.getWinners({ page: store.winnersPage, sort: store.sortBy, order: store.sortOrder });
     store.winners = items;
-    store.winnersCount = count; 
+    store.winnersCount = count;
 
     if (store.winnersPage * 10 < parseInt(store.winnersCount!)) {
       (document.getElementById('next-winners') as HTMLButtonElement).disabled = false;
@@ -22,14 +22,14 @@ class Winners {
     }
   }
   async addevents() {
-    document.body.addEventListener('click',async (e) => {
+    document.body.addEventListener('click', async (e) => {
       const target = e.target as Element;
-      if(target.classList.contains('table-wins')) {
+      if (target.classList.contains('table-wins')) {
         this.setSortOrder('wins');
-      } 
-      if(target.classList.contains('table-time')) {
+      }
+      if (target.classList.contains('table-time')) {
         this.setSortOrder('time');
-      } 
+      }
     })
   }
 
@@ -39,28 +39,28 @@ class Winners {
 
     await this.updateStateWinners();
     const winnersPage = document.querySelector<HTMLElement>('.winners');
-     winnersPage!.innerHTML = this.render();
+    winnersPage!.innerHTML = this.render();
 
-     if (store.sortBy === 'wins') {
+    if (store.sortBy === 'wins') {
       if (store.sortOrder === "asc") {
-      (document.getElementById('icon-wins') as HTMLElement).style.display = 'block';
-      (document.getElementById('icon-wins') as HTMLElement).style.transform = 'scale(1, -1)';
+        (document.getElementById('icon-wins') as HTMLElement).style.display = 'block';
+        (document.getElementById('icon-wins') as HTMLElement).style.transform = 'scale(1, -1)';
       } else {
         (document.getElementById('icon-wins') as HTMLElement).style.display = 'block';
       }
-     }
-     if (store.sortBy === 'time') {
+    }
+    if (store.sortBy === 'time') {
       if (store.sortOrder === "asc") {
-      (document.getElementById('icon-time') as HTMLElement).style.display = 'block';
-      (document.getElementById('icon-time') as HTMLElement).style.transform = 'scale(1, -1)';
+        (document.getElementById('icon-time') as HTMLElement).style.display = 'block';
+        (document.getElementById('icon-time') as HTMLElement).style.transform = 'scale(1, -1)';
       } else {
         (document.getElementById('icon-time') as HTMLElement).style.display = 'block';
       }
-     }
+    }
   }
- 
+
   render() {
-    
+
     return `
     <main class="winners">
       <div class="container">
