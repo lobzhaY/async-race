@@ -42,6 +42,11 @@ class Car {
 
         const garagePage = document.querySelector<HTMLElement>('.garage');
         garagePage!.innerHTML = Garage.render();
+
+        if (((document.getElementById('race')) as HTMLButtonElement).disabled == true) {
+          ((document.getElementById('race')) as HTMLButtonElement).disabled = false;
+          ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
+        }
       }
     })
   }

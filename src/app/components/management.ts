@@ -11,7 +11,6 @@ class Management {
   }
   
   generateCars() {
-    //((document.getElementById('generate')) as HTMLButtonElement).disabled = true;
     document.getElementById('generate')?.addEventListener('click', async (e) => {
       const cars = carCreateUtils.generateRandomCars();
       await Promise.all(cars.map(async car => await garageApi.createCar(car)));
@@ -55,6 +54,11 @@ class Management {
       this.disabledUpdateField('create-name', 'create-color', 'button-create', false);
       (<HTMLInputElement>document.getElementById("update-name")).value = '';
       (<HTMLInputElement>document.getElementById("update-color")).value = 'aaaaaa';
+
+      if (((document.getElementById('race')) as HTMLButtonElement).disabled == true) {
+        ((document.getElementById('race')) as HTMLButtonElement).disabled = false;
+        ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
+      }
 
     })
   }

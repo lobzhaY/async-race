@@ -37,18 +37,8 @@ class Header {
       store.view = 'winners';
     });
 
-   // this.disabledButtonHeader();
   }
 
-  /* disabledButtonHeader() {
-  Отмена повторного нажатия на ту же кнопку, на которой открыта страница????
-    document.querySelector<HTMLElement>('.header')?.addEventListener('click', (e) => {
-      const target = e.target as Element;
-      if (target.classList.contains('button-garage')) {
-        ((document.getElementById('button-garage')) as HTMLButtonElement).dis
-      }
-    })
-  } */
 
   render() {
     return `
