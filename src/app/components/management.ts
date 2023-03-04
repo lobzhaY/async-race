@@ -1,91 +1,98 @@
-import { garageApi, winnersApi } from "../api/index";
-import { CarBody } from "../interface/interface";
-import { Garage, Winners } from "../pages/index";
-import carCreateUtils from "../utils/create-car-utils";
+import { garageApi } from '../api/index';
+import { CarBody } from '../interface/interface';
+import { Garage, Winners } from '../pages/index';
+import carCreateUtils from '../utils/create-car-utils';
 
 class Management {
-  async addEvents() {
-    this.createNewCar();
-    this.disabledUpdateField('update-name', 'update-color', 'button-update', true);
-    this.generateCars();
-  }
-  
-  generateCars() {
-    //((document.getElementById('generate')) as HTMLButtonElement).disabled = true;
-    document.getElementById('generate')?.addEventListener('click', async (e) => {
-      const cars = carCreateUtils.generateRandomCars();
-      await Promise.all(cars.map(async car => await garageApi.createCar(car)));
-      await Garage.updateStateGarage();
-      const garagePage = document.querySelector<HTMLElement>('.garage');
-      garagePage!.innerHTML = Garage.render();
-      ((document.getElementById('generate')) as HTMLButtonElement).disabled = false;
-    })
-  }
+    async addEvents(): Promise<void> {
+        this.createNewCar();
+        this.disabledUpdateField('update-name', 'update-color', 'button-update', true);
+        this.generateCars();
+    }
 
-  disabledUpdateField(inputName: string, inputColor: string, button: string, flag: boolean) {
-    const inputNameUpdate = document.getElementById(inputName) as HTMLInputElement;
-    inputNameUpdate!.disabled = flag;
-    const inputColorUpdate = (document.getElementById(inputColor)) as HTMLInputElement;
-    inputColorUpdate!.disabled = flag;
-    const buttonUpdate = (document.getElementById(button)) as HTMLButtonElement;
-    buttonUpdate!.disabled = flag;
-  }
+    generateCars(): void {
+        document.getElementById('generate')?.addEventListener('click', async (): Promise<void> => {
+            const cars = carCreateUtils.generateRandomCars();
+            await Promise.all(cars.map(async (car) => await garageApi.createCar(car)));
+            await Garage.updateStateGarage();
+            const garagePage = document.querySelector<HTMLElement>('.garage');
+            if (garagePage) {
+                garagePage.innerHTML = Garage.render();
+            }
+            (document.getElementById('generate') as HTMLButtonElement).disabled = false;
+        });
+    }
 
-  async updateCar(idCar: number) {
-    const buttonUpdate = document.getElementById('button-update');
-    buttonUpdate?.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const inputText = (<HTMLInputElement>document.getElementById("update-name")).value;
-      const inputColor = (<HTMLInputElement>document.getElementById("update-color")).value;
-      let car = Object.fromEntries(new Map([
-        ['name', `${inputText}`],
-        ['color', `${inputColor}`]
-      ])) as unknown;
+    disabledUpdateField(inputName: string, inputColor: string, button: string, flag: boolean): void {
+        const inputNameUpdate = document.getElementById(inputName) as HTMLInputElement;
+        inputNameUpdate.disabled = flag;
+        const inputColorUpdate = document.getElementById(inputColor) as HTMLInputElement;
+        inputColorUpdate.disabled = flag;
+        const buttonUpdate = document.getElementById(button) as HTMLButtonElement;
+        buttonUpdate.disabled = flag;
+    }
 
-      let newCar: CarBody = car as CarBody;
+    async updateCar(idCar: number): Promise<void> {
+        const buttonUpdate = document.getElementById('button-update');
+        buttonUpdate?.addEventListener('click', async (e): Promise<void> => {
+            e.preventDefault();
+            const inputText = (<HTMLInputElement>document.getElementById('update-name')).value;
+            const inputColor = (<HTMLInputElement>document.getElementById('update-color')).value;
+            const car = Object.fromEntries(
+                new Map([
+                    ['name', `${inputText}`],
+                    ['color', `${inputColor}`],
+                ])
+            ) as unknown;
 
-      await garageApi.updateCar(idCar, newCar);
-      await Garage.updateStateGarage();
-      await Winners.updateStateWinners();
+            const newCar: CarBody = car as CarBody;
 
-      const garagePage = document.querySelector<HTMLElement>('.garage');
-      garagePage!.innerHTML = Garage.render();
+            await garageApi.updateCar(idCar, newCar);
+            await Garage.updateStateGarage();
+            await Winners.updateStateWinners();
 
-      this.disabledUpdateField("update-name", "update-color", "button-update", true);
-      this.disabledUpdateField('create-name', 'create-color', 'button-create', false);
-      (<HTMLInputElement>document.getElementById("update-name")).value = '';
-      (<HTMLInputElement>document.getElementById("update-color")).value = 'aaaaaa';
+            const garagePage = document.querySelector<HTMLElement>('.garage');
+            if (garagePage) {
+                garagePage.innerHTML = Garage.render();
+            }
 
-    })
-  }
+            this.disabledUpdateField('update-name', 'update-color', 'button-update', true);
+            this.disabledUpdateField('create-name', 'create-color', 'button-create', false);
+            (<HTMLInputElement>document.getElementById('update-name')).value = '';
+            (<HTMLInputElement>document.getElementById('update-color')).value = 'aaaaaa';
+        });
+    }
 
-  async createNewCar() {
-    const buttonCreate = document.getElementById('button-create');
-    buttonCreate?.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const inputText = (<HTMLInputElement>document.getElementById("create-name")).value;
-      const inputColor = (<HTMLInputElement>document.getElementById("create-color")).value;
-      let car = Object.fromEntries(new Map([
-        ['name', `${inputText}`],
-        ['color', `${inputColor}`]
-      ])) as unknown;
+    async createNewCar(): Promise<void> {
+        const buttonCreate = document.getElementById('button-create');
+        buttonCreate?.addEventListener('click', async (e): Promise<void> => {
+            e.preventDefault();
+            const inputText = (<HTMLInputElement>document.getElementById('create-name')).value;
+            const inputColor = (<HTMLInputElement>document.getElementById('create-color')).value;
+            const car = Object.fromEntries(
+                new Map([
+                    ['name', `${inputText}`],
+                    ['color', `${inputColor}`],
+                ])
+            ) as unknown;
 
-      let newCar: CarBody = car as CarBody;
+            const newCar: CarBody = car as CarBody;
 
-      await garageApi.createCar(newCar);
-      await Garage.updateStateGarage();
+            await garageApi.createCar(newCar);
+            await Garage.updateStateGarage();
 
-      const garagePage = document.querySelector<HTMLElement>('.garage');
-      garagePage!.innerHTML = Garage.render();
-      
-      (<HTMLInputElement>document.getElementById("create-name")).value = '';
-      (<HTMLInputElement>document.getElementById("create-color")).value = '#aaaaaa';
-    })
-  }
+            const garagePage = document.querySelector<HTMLElement>('.garage');
+            if (garagePage) {
+                garagePage.innerHTML = Garage.render();
+            }
 
+            (<HTMLInputElement>document.getElementById('create-name')).value = '';
+            (<HTMLInputElement>document.getElementById('create-color')).value = '#aaaaaa';
+        });
+    }
 
-  render() {
-    return `<section class="management">
+    render(): string {
+        return `<section class="management">
     <div class="container">
       <div class="row">
         <input type="text" id="create-name">
@@ -103,9 +110,9 @@ class Management {
         <button id="generate">generate cars</button>
       </div>
     </div>
-  </section>`
-  };
-};
+  </section>`;
+    }
+}
 
 const management = new Management();
 export default management;

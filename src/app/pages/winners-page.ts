@@ -1,67 +1,72 @@
-import { winnersApi } from "../api/index";
-import { Footer, Header, Winner } from "../components/index";
-import store from "../store/store";
+import { winnersApi } from '../api/index';
+import { Winner } from '../components/index';
+import store from '../store/store';
 
 class Winners {
-  
-  async updateStateWinners() {
+    async updateStateWinners(): Promise<void> {
+        const { items, count } = await winnersApi.getWinners({
+            page: store.winnersPage,
+            sort: store.sortBy,
+            order: store.sortOrder,
+        });
+        store.winners = items;
+        store.winnersCount = count;
 
-    const { items, count } = await winnersApi.getWinners({ page: store.winnersPage, sort: store.sortBy, order: store.sortOrder });
-    store.winners = items;
-    store.winnersCount = count; 
-
-    if (store.winnersPage * 10 < parseInt(store.winnersCount!)) {
-      (document.getElementById('next-winners') as HTMLButtonElement).disabled = false;
-    } else {
-      (document.getElementById('next-winners') as HTMLButtonElement).disabled = true;
+        if (store.winnersCount) {
+            if (store.winnersPage * 10 < parseInt(store.winnersCount)) {
+                (document.getElementById('next-winners') as HTMLButtonElement).disabled = false;
+            } else {
+                (document.getElementById('next-winners') as HTMLButtonElement).disabled = true;
+            }
+            if (store.winnersPage > 1) {
+                (document.getElementById('prev-winners') as HTMLButtonElement).disabled = false;
+            } else {
+                (document.getElementById('prev-winners') as HTMLButtonElement).disabled = true;
+            }
+        }
     }
-    if (store.winnersPage > 1) {
-      (document.getElementById('prev-winners') as HTMLButtonElement).disabled = false;
-    } else {
-      (document.getElementById('prev-winners') as HTMLButtonElement).disabled = true;
+    async addEvents(): Promise<void> {
+        document.body.addEventListener('click', async (e) => {
+            const target = e.target as Element;
+            if (target.classList.contains('table-wins')) {
+                this.setSortOrder('wins');
+            }
+            if (target.classList.contains('table-time')) {
+                this.setSortOrder('time');
+            }
+        });
     }
-  }
-  async addevents() {
-    document.body.addEventListener('click',async (e) => {
-      const target = e.target as Element;
-      if(target.classList.contains('table-wins')) {
-        this.setSortOrder('wins');
-      } 
-      if(target.classList.contains('table-time')) {
-        this.setSortOrder('time');
-      } 
-    })
-  }
 
-  async setSortOrder(sort: string) {
-    store.sortOrder = store.sortOrder === 'asc' ? 'desc' : 'asc';
-    store.sortBy = sort;
+    async setSortOrder(sort: string): Promise<void> {
+        store.sortOrder = store.sortOrder === 'asc' ? 'desc' : 'asc';
+        store.sortBy = sort;
 
-    await this.updateStateWinners();
-    const winnersPage = document.querySelector<HTMLElement>('.winners');
-     winnersPage!.innerHTML = this.render();
+        await this.updateStateWinners();
+        const winnersPage = document.querySelector<HTMLElement>('.winners');
+        if (winnersPage) {
+            winnersPage.innerHTML = this.render();
+        }
 
-     if (store.sortBy === 'wins') {
-      if (store.sortOrder === "asc") {
-      (document.getElementById('icon-wins') as HTMLElement).style.display = 'block';
-      (document.getElementById('icon-wins') as HTMLElement).style.transform = 'scale(1, -1)';
-      } else {
-        (document.getElementById('icon-wins') as HTMLElement).style.display = 'block';
-      }
-     }
-     if (store.sortBy === 'time') {
-      if (store.sortOrder === "asc") {
-      (document.getElementById('icon-time') as HTMLElement).style.display = 'block';
-      (document.getElementById('icon-time') as HTMLElement).style.transform = 'scale(1, -1)';
-      } else {
-        (document.getElementById('icon-time') as HTMLElement).style.display = 'block';
-      }
-     }
-  }
- 
-  render() {
-    
-    return `
+        if (store.sortBy === 'wins') {
+            if (store.sortOrder === 'asc') {
+                (document.getElementById('icon-wins') as HTMLElement).style.display = 'block';
+                (document.getElementById('icon-wins') as HTMLElement).style.transform = 'scale(1, -1)';
+            } else {
+                (document.getElementById('icon-wins') as HTMLElement).style.display = 'block';
+            }
+        }
+        if (store.sortBy === 'time') {
+            if (store.sortOrder === 'asc') {
+                (document.getElementById('icon-time') as HTMLElement).style.display = 'block';
+                (document.getElementById('icon-time') as HTMLElement).style.transform = 'scale(1, -1)';
+            } else {
+                (document.getElementById('icon-time') as HTMLElement).style.display = 'block';
+            }
+        }
+    }
+
+    render(): string {
+        return `
     <main class="winners">
       <div class="container">
         <h1 class="title">Winners ( <span class="winners-num">${store.winnersCount}</span> )</h1>
@@ -80,9 +85,9 @@ class Winners {
         </div>
       </div>
     </main>
-    `
-  };
-};
+    `;
+    }
+}
 
 const winners = new Winners();
 export default winners;

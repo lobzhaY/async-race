@@ -1,132 +1,135 @@
-import { engineApi, garageApi, winnersApi } from "../api/index";
-import { CarBody, ICar, IState, TotalWinner } from "../interface/interface";
-import { Garage, Winners } from "../pages/index";
-import store from "../store/store";
-import carAnimationUtils from "../utils/animation-car-utils";
-import { Management, WinnerMessage } from "./index";
-import winner from "./winner";
+import { engineApi, garageApi, winnersApi } from '../api/index';
+import { ICar } from '../interface/interface';
+import { Garage, Winners } from '../pages/index';
+import store from '../store/store';
+import carAnimationUtils from '../utils/animation-car-utils';
+import { Management, WinnerMessage } from './index';
 
 class Car {
-  async addEvents() {
-    this.removeCar();
-    this.selectCar();
-    this.engineCar();
-    this.race();
-  }
-
-  async selectCar() {
-    document.body.addEventListener('click', async (e) => {
-      const target = e.target as Element;
-      if (target.classList.contains('button-select')) {
-        const idCar = +target.id.split('button-select-')[1];
-        const selectedCar = await garageApi.getCar(idCar);
-
-        Management.disabledUpdateField('create-name', 'create-color', 'button-create', true);
-        (<HTMLInputElement>document.getElementById("update-name")).value = selectedCar.name;
-        (<HTMLInputElement>document.getElementById("update-color")).value = selectedCar.color;
-        Management.disabledUpdateField('update-name', 'update-color', 'button-update', false);
-
-        Management.updateCar(idCar);
-      }
-    })
-  }
-
-  async removeCar() {
-    document.body.addEventListener('click', async (e) => {
-      const target = e.target as Element;
-      if (target.classList.contains('button-delete')) {
-        const idButton = +target.id.split('button-delete-')[1];
-        await garageApi.deleteCar(idButton);
-        await winnersApi.deleteWinner(idButton);
-        await Garage.updateStateGarage();
-        await Winners.updateStateWinners();
-
-        const garagePage = document.querySelector<HTMLElement>('.garage');
-        garagePage!.innerHTML = Garage.render();
-      }
-    })
-  }
-
-  async startDriving(id: number) {
-    const startButton = ((document.getElementById(`start-car-${id}`)) as HTMLButtonElement);
-    startButton.disabled = true;
-
-    const { velocity, distance } = await engineApi.startEngine(id);
-    const time = Math.round(distance / velocity);
-
-    ((document.getElementById(`stop-car-${id}`)) as HTMLButtonElement).disabled = false;
-
-    const car = document.getElementById(`car-${id}`);
-    const flag = document.getElementById(`finish-${id}`);
-
-    const distanceHTML = Math.floor(carAnimationUtils.getDistanceBetweenElements(car!, flag!)) + 100;
-
-    store.animation[id!] = carAnimationUtils.animationCar(car!, distanceHTML, time);
-    const { success } = await engineApi.driveCar(id);
-    if (!success) {
-      window.cancelAnimationFrame(store.animation[id].id!);
+    async addEvents(): Promise<void> {
+        this.removeCar();
+        this.selectCar();
+        this.engineCar();
+        this.race();
     }
-    return { success, id, time };
-  }
 
-  async stopDriving(id: number) {
-    const stopButton = ((document.getElementById(`stop-car-${id}`)) as HTMLButtonElement);
-    stopButton.disabled = true;
+    async selectCar(): Promise<void> {
+        document.body.addEventListener('click', async (e): Promise<void> => {
+            const target = e.target as Element;
+            if (target.classList.contains('button-select')) {
+                const idCar = +target.id.split('button-select-')[1];
+                const selectedCar = await garageApi.getCar(idCar);
 
-    await engineApi.stopEngine(id);
-    ((document.getElementById(`start-car-${id}`)) as HTMLButtonElement).disabled = false;
+                Management.disabledUpdateField('create-name', 'create-color', 'button-create', true);
+                (<HTMLInputElement>document.getElementById('update-name')).value = selectedCar.name;
+                (<HTMLInputElement>document.getElementById('update-color')).value = selectedCar.color;
+                Management.disabledUpdateField('update-name', 'update-color', 'button-update', false);
 
-    const car = document.getElementById(`car-${id}`);
-    car!.style.transform = `translateX(0)`;
-    if (store.animation[id]) {
-      window.cancelAnimationFrame(store.animation[id].id!);
+                Management.updateCar(idCar);
+            }
+        });
     }
-  }
 
-  async race() {
-    document.body.addEventListener('click', async (e) => {
-      const target = e.target as Element;
-      if (target.classList.contains('race-button')) {
-    ((document.getElementById('race')) as HTMLButtonElement).disabled = true;
-    
-    const winner = await carAnimationUtils.race();
-        await winnersApi.saveWinner(winner);
-        ((document.getElementById('message')) as HTMLElement).innerHTML = WinnerMessage.render(winner);
-        ((document.getElementById('message')) as HTMLElement).style.display = 'block';
-        ((document.getElementById('reset')) as HTMLButtonElement).disabled = false;
-        await Winners.updateStateWinners();
-      }
+    async removeCar(): Promise<void> {
+        document.body.addEventListener('click', async (e): Promise<void> => {
+            const target = e.target as Element;
+            if (target.classList.contains('button-delete')) {
+                const idButton = +target.id.split('button-delete-')[1];
+                await garageApi.deleteCar(idButton);
+                await winnersApi.deleteWinner(idButton);
+                await Garage.updateStateGarage();
+                await Winners.updateStateWinners();
 
-      if (target.classList.contains('reset-button')) {
-        ((document.getElementById('race')) as HTMLButtonElement).disabled = false;
-        ((document.getElementById('reset')) as HTMLButtonElement).disabled = true;
-        ((document.getElementById('message')) as HTMLElement).innerHTML = '';
-        ((document.getElementById('message')) as HTMLElement).style.display = 'none';
+                const garagePage = document.querySelector<HTMLElement>('.garage');
+                if (garagePage) {
+                    garagePage.innerHTML = Garage.render();
+                }
+            }
+        });
+    }
 
-        store.cars.map((e) => {
-          this.stopDriving(e.id);
-        })
-        
-      }
-    })
-  }
+    async startDriving(id: number): Promise<{ success: boolean; id: number; time: number }> {
+        const startButton = document.getElementById(`start-car-${id}`) as HTMLButtonElement;
+        startButton.disabled = true;
 
-  async engineCar() {
-    document.body.addEventListener('click', async (e) => {
-      const target = e.target as Element;
-      if (target.classList.contains('start-button')) {
-        const id = parseInt(target.id.split('start-car-')[1]);
-        this.startDriving(id);
-      }
-      if (target.classList.contains('stop-button')) {
-        const id = parseInt(target.id.split('stop-car-')[1]);
-        this.stopDriving(id);
-      }
-    })
-  }
+        const { velocity, distance } = await engineApi.startEngine(id);
+        const time = Math.round(distance / velocity);
 
-  render({ id, name, color }: ICar) {
-    return `
+        (document.getElementById(`stop-car-${id}`) as HTMLButtonElement).disabled = false;
+
+        const car = document.getElementById(`car-${id}`);
+        const flag = document.getElementById(`finish-${id}`);
+
+        const distanceHTML =
+            Math.floor(carAnimationUtils.getDistanceBetweenElements(car as HTMLElement, flag as HTMLElement)) + 100;
+
+        store.animation[id] = carAnimationUtils.animationCar(car as HTMLElement, distanceHTML, time);
+        const { success } = await engineApi.driveCar(id);
+        if (!success) {
+            window.cancelAnimationFrame(store.animation[id].id as number);
+        }
+        return { success, id, time };
+    }
+
+    async stopDriving(id: number): Promise<void> {
+        const stopButton = document.getElementById(`stop-car-${id}`) as HTMLButtonElement;
+        stopButton.disabled = true;
+
+        await engineApi.stopEngine(id);
+        (document.getElementById(`start-car-${id}`) as HTMLButtonElement).disabled = false;
+
+        const car = document.getElementById(`car-${id}`);
+        if (car) {
+            car.style.transform = `translateX(0)`;
+        }
+        if (store.animation[id]) {
+            window.cancelAnimationFrame(store.animation[id].id as number);
+        }
+    }
+
+    async race(): Promise<void> {
+        document.body.addEventListener('click', async (e) => {
+            const target = e.target as Element;
+            if (target.classList.contains('race-button')) {
+                (document.getElementById('race') as HTMLButtonElement).disabled = true;
+
+                const winner = await carAnimationUtils.race();
+                await winnersApi.saveWinner(winner);
+                (document.getElementById('message') as HTMLElement).innerHTML = WinnerMessage.render(winner);
+                (document.getElementById('message') as HTMLElement).style.display = 'block';
+                (document.getElementById('reset') as HTMLButtonElement).disabled = false;
+                await Winners.updateStateWinners();
+            }
+
+            if (target.classList.contains('reset-button')) {
+                (document.getElementById('race') as HTMLButtonElement).disabled = false;
+                (document.getElementById('reset') as HTMLButtonElement).disabled = true;
+                (document.getElementById('message') as HTMLElement).innerHTML = '';
+                (document.getElementById('message') as HTMLElement).style.display = 'none';
+
+                store.cars.map((e) => {
+                    this.stopDriving(e.id);
+                });
+            }
+        });
+    }
+
+    async engineCar(): Promise<void> {
+        document.body.addEventListener('click', async (e) => {
+            const target = e.target as Element;
+            if (target.classList.contains('start-button')) {
+                const id = parseInt(target.id.split('start-car-')[1]);
+                this.startDriving(id);
+            }
+            if (target.classList.contains('stop-button')) {
+                const id = parseInt(target.id.split('stop-car-')[1]);
+                this.stopDriving(id);
+            }
+        });
+    }
+
+    render({ id, name, color }: ICar): string {
+        return `
     <div class="garage__car">
           <div class="car__info">
             <button class="button-select" id="button-select-${id}">select</button>
@@ -174,9 +177,9 @@ class Car {
               </div>
             </div>
         </div>
-    `
-  };
-};
+    `;
+    }
+}
 
 const car = new Car();
 export default car;
