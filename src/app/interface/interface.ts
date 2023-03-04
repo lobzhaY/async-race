@@ -77,6 +77,6 @@ export interface IEngine {
     velocity: number;
 }
 
-export type CarsEngine = {
+export interface CarsEngine {
     success: boolean;
-};
+}

@@ -27,7 +27,7 @@ class Winners {
         };
     }
 
-    async getWinner(id: number): Promise<IWinner> {
+    async getWinner(id: number): Promise<GetWinner> {
         return (await fetch(`${WINNERS}/${id}`)).json();
     }
 
