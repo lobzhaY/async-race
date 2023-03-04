@@ -1,7 +1,7 @@
 import '../style/app.scss';
 import header from './components/header';
-import { Footer, Header, Management, Car, WinnerMessage } from './components/index';
-import { Garage, Winners } from "./pages/index";
+import { Footer, Header, Management, Car } from './components/index';
+import { Garage, Winners } from './pages/index';
 
 const root = document.createElement('div');
 root.id = 'root-container';
@@ -10,7 +10,6 @@ ${Management.render()}
 ${Garage.render()}
 ${Winners.render()}  
 <div class="all-pagination">
-
   <div class="garage__pagination">
   <div class="pagination-container">
     <button class="prev-button" id="prev-garage">prev</button>
@@ -36,16 +35,19 @@ await Garage.updateStateGarage();
 await Winners.updateStateWinners();
 await Management.addEvents();
 await Car.addEvents();
-//await Management.createNewCar();
 await Garage.prevPageClick();
 await Garage.nextPageClick();
-await Winners.addevents();
-
-
+await Winners.addEvents();
 
 const garagePage = document.querySelector<HTMLElement>('.garage');
-garagePage!.style.display = 'block';
+if (garagePage) {
+    garagePage.style.display = 'block';
+}
 const winnersPage = document.querySelector<HTMLElement>('.winners');
-winnersPage!.style.display = 'none';
-const mamagementBlock = document.querySelector<HTMLElement>('.management');
-mamagementBlock!.style.display = 'block';
+if (winnersPage) {
+    winnersPage.style.display = 'none';
+}
+const managementBlock = document.querySelector<HTMLElement>('.management');
+if (managementBlock) {
+    managementBlock.style.display = 'block';
+}

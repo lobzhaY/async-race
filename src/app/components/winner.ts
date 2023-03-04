@@ -1,14 +1,18 @@
-import { IWinner } from "../interface/interface";
-import store from "../store/store";
+import { IWinner } from '../interface/interface';
+import store from '../store/store';
 
 class Winner {
-  render(winner: IWinner, index: number) {
-    return `
+    render(winner: IWinner, index: number): string {
+        return `
     <div class="table-row">
-      <p class="table-row__item-num table-row__items">${store.winnersPage === 1 ? ++index : ++index + (store.winnersPage * 10 - 10)}</p>
+      <p class="table-row__item-num table-row__items">${
+          store.winnersPage === 1 ? ++index : ++index + (store.winnersPage * 10 - 10)
+      }</p>
       <p class="table-row__item-car table-row__items">
       
-      <svg class="winner-car" id="car-${winner.car.id}" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      <svg class="winner-car" id="car-${
+          winner.car.id
+      }" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
    viewBox="0 0 404.243 404.243" style="enable-background:new 0 0 404.243 404.243;" xml:space="preserve">
 <g>
   <path style="fill:${winner.car.color};" d="M394.444,252.603l-4.552-0.091v-15.73c3.752-1.441,6.421-5.069,6.421-9.329
@@ -30,7 +34,9 @@ class Winner {
      M317.454,222.371c-18.114,0-33.542,11.68-39.176,27.9l-6.652-0.134c5.896-20.068,24.514-34.619,46.242-34.619
     c22.357,0,41.47,15.142,46.758,36.486l-7.479-0.15C351.994,234.814,336.153,222.371,317.454,222.371z"/>
   <circle style="fill:${winner.car.color};" cx="317.454" cy="263.837" r="12.217"/>
-  <path style="fill:${winner.car.color};" d="M171.34,185.578h81.05c3.783,0,7.243-2.135,8.939-5.518c1.695-3.382,1.338-7.432-0.926-10.464
+  <path style="fill:${
+      winner.car.color
+  };" d="M171.34,185.578h81.05c3.783,0,7.243-2.135,8.939-5.518c1.695-3.382,1.338-7.432-0.926-10.464
     l-8.761-11.738l0.001,0.001c-12.25-16.415-31.008-26.409-51.466-27.419c-0.164-0.008-0.329-0.012-0.493-0.012H171.34
     c-5.522,0-10,4.477-10,10v35.15C161.34,181.101,165.817,185.578,171.34,185.578z M181.34,150.428h18.087
     c12.53,0.679,24.146,6.123,32.632,15.15H181.34V150.428z"/>
@@ -40,9 +46,9 @@ class Winner {
       <p class="table-row__item-wins table-row__items">${winner.wins}</p>
       <p class="table-row__item-time table-row__items">${winner.time}</p>
     </div>
-    `
-  };
-};
+    `;
+    }
+}
 
 const winner = new Winner();
 export default winner;

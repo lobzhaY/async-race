@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack serve --open --config ./webpack.config.js --env mode=dev",
     "build": "webpack --config ./webpack.config.js --env mode=prod",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src --color"
   },
   "repository": {
     "type": "git",
@@ -39,5 +39,8 @@
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1",
     "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "eslint-config-airbnb-typescript": "^17.0.0"
   }
 }

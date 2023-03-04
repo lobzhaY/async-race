@@ -1,7 +1,6 @@
 class Footer {
-
-  render() {
-    return `
+    render(): string {
+        return `
     <footer class="footer">
     <div class="container">
       <div class="footer__info">
@@ -14,9 +13,9 @@ class Footer {
       </div>
     </div>
   </footer>
-    `
-  };
-};
+    `;
+    }
+}
 
 const footer = new Footer();
 export default footer;
