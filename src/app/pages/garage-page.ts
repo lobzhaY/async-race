@@ -9,6 +9,7 @@ class Garage {
         const { items, count } = await garageApi.getCars(store.carsPage);
         store.cars = items;
         store.carsCount = count;
+
         const maxCarsPage: number = store.carsPage * 7;
 
         if (store.carsCount) {
@@ -37,6 +38,7 @@ class Garage {
                     if (garagePage) {
                         garagePage.innerHTML = this.render();
                     }
+
                     (document.getElementById('race') as HTMLButtonElement).disabled = false;
                     (document.getElementById('reset') as HTMLButtonElement).disabled = true;
                 } else {
