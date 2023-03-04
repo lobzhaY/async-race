@@ -36,7 +36,7 @@ class Winners {
             }
         });
     }
-
+    
     async setSortOrder(sort: string): Promise<void> {
         store.sortOrder = store.sortOrder === 'asc' ? 'desc' : 'asc';
         store.sortBy = sort;
@@ -46,7 +46,6 @@ class Winners {
         if (winnersPage) {
             winnersPage.innerHTML = this.render();
         }
-
         if (store.sortBy === 'wins') {
             if (store.sortOrder === 'asc') {
                 (document.getElementById('icon-wins') as HTMLElement).style.display = 'block';
