@@ -9,7 +9,7 @@ class Management {
         this.disabledUpdateField('update-name', 'update-color', 'button-update', true);
         this.generateCars();
     }
-    
+
     generateCars(): void {
         document.getElementById('generate')?.addEventListener('click', async (): Promise<void> => {
             const cars = carCreateUtils.generateRandomCars();
@@ -62,7 +62,7 @@ class Management {
             (<HTMLInputElement>document.getElementById('update-color')).value = 'aaaaaa';
         });
     }
-    
+
     async createNewCar(): Promise<void> {
         const buttonCreate = document.getElementById('button-create');
         buttonCreate?.addEventListener('click', async (e): Promise<void> => {

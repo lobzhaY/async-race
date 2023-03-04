@@ -36,7 +36,7 @@ class Winners {
             }
         });
     }
-    
+
     async setSortOrder(sort: string): Promise<void> {
         store.sortOrder = store.sortOrder === 'asc' ? 'desc' : 'asc';
         store.sortBy = sort;
